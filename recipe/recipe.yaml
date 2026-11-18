@@ -16,6 +16,10 @@ build:
   skip: win
   dynamic_linking:
     overlinking_behavior: error
+    # The camera/port drivers link against this package's own libraries via
+    # their soname symlinks, which the overlinking check reports on Linux.
+    missing_dso_allowlist:
+      - "**/libgphoto2*.so*"
   script:
     - ./configure --prefix=$PREFIX --disable-static
     - make -j${CPU_COUNT}
