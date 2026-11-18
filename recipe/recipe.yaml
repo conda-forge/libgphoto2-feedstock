@@ -14,6 +14,8 @@ source:
 build:
   number: 2
   skip: win
+  dynamic_linking:
+    overlinking_behavior: error
   script:
     - ./configure --prefix=$PREFIX --disable-static
     - make -j${CPU_COUNT}
