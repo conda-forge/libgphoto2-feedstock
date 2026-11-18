@@ -12,8 +12,14 @@ source:
   sha256: 51993f5d9bfb6b4e5925cbbe5883085791bff6f81bcacb8ffe1b783ce76d586a
 
 build:
-  number: 1
+  number: 2
   skip: win
+  dynamic_linking:
+    overlinking_behavior: error
+    # The camera/port drivers link against this package's own libraries via
+    # their soname symlinks, which the overlinking check reports on Linux.
+    missing_dso_allowlist:
+      - "**/libgphoto2*.so*"
   script:
     - ./configure --prefix=$PREFIX --disable-static
     - make -j${CPU_COUNT}
@@ -25,7 +31,7 @@ requirements:
     - ${{ stdlib('c') }}
     - make
     - libtool
-    - pkg-config
+    - pkgconf
     - gettext
   host:
     - libusb
@@ -33,7 +39,8 @@ requirements:
     - libjpeg-turbo
     - libxml2-devel
     - gettext
-    - libtool
+    - libltdl
+    - libiconv
   run_exports:
     - ${{ pin_subpackage('libgphoto2', upper_bound='x.x') }}
 
@@ -44,6 +51,13 @@ tests:
         - gphoto2_port
       include:
         - gphoto2/gphoto2.h
+  # Load the library and its camera/port drivers; needs no camera attached.
+  - script:
+      file: run_test.py
+      interpreter: python
+    requirements:
+      run:
+        - python
 
 about:
   homepage: http://www.gphoto.org/

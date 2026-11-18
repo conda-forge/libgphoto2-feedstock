@@ -16,6 +16,8 @@ docker_image:
 - quay.io/condaforge/linux-anvil-x86_64:alma10
 gettext:
 - '1'
+libiconv:
+- '1'
 libjpeg_turbo:
 - '3'
 libxml2_devel:
